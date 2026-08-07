@@ -80,7 +80,7 @@ class EmailAgent(BaseAgent):
         try:
             # Query GeminiService asynchronously
             analysis_result = await self._gemini_service.analyze_email(
-                content=content,
+                email_text=content,
                 subject=subject,
                 sender=sender
             )
