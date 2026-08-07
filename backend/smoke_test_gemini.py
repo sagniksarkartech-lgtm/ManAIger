@@ -17,7 +17,8 @@ async def test_email_agent():
     res1 = await agent.process_async({})
     print(f"Result: {res1}")
     assert res1["success"] is False
-    assert res1["error"] == "Invalid AI response"
+    assert "error" in res1
+    assert res1["error"] is not None
     print("PASSED Test 1")
 
     # Test 2: Gemini JSON Validation logic
