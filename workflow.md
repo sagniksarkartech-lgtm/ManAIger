@@ -1,6 +1,6 @@
 # Data Lifecycle & HITL Workflow
 
-This document traces the exact lifecycle of a single piece of data as it travels through CommandHQ AI, highlighting the mandatory Human-in-the-Loop (HITL) checkpoints.
+This document traces the exact lifecycle of a single piece of data as it travels through ManaAIger, highlighting the mandatory Human-in-the-Loop (HITL) checkpoints.
 
 ## Phase 1: Ingestion & Triage
 1. **Input:** Unstructured data enters the system (e.g., an email via `POST /process-email` or an invoice via `POST /process-invoice`).
