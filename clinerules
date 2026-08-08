@@ -1,0 +1,31 @@
+ManAIger
+# ManAIger - AI Assistant Constitution (.clinerules)
+
+This document defines the strict development rules, architectural constraints, and coding standards for all AI coding assistants working on the ManAIger project. Treat these instructions as absolute invariants.
+
+## 1. Project Context & Team Structure
+*   **Project**: ManAIger (Internal: MANAIGER)
+*   **Hackathon Context**: "Deploy or Die" - Track A: Business Process Automation.
+*   **Core Philosophy**: Zero over-engineering. Write modular, understandable, production-grade code. Progressive commits only.
+*   **Team Boundaries**: Susobhan owns System Architecture/Docs, Sagnik owns Backend/AI, Krishnendu owns Frontend UI, Adrija owns UI/UX. Do not generate code that crosses these ownership boundaries without explicit instructions.
+
+## 2. The HITL (Human-in-the-Loop) Mandate
+*   **ABSOLUTE RULE**: No AI agent or automated workflow is permitted to execute a final action (e.g., sending an email payload, processing an invoice payment) directly.
+*   **The Intercept Pattern**: All AI-driven state changes must be intercepted and pushed to the PostgreSQL database with a `PENDING_APPROVAL` status using the custom `queue_for_human_approval` Python skill.
+*   **Execution Isolation**: Final execution is strictly reserved for the frontend React dashboard via an explicit human authorization (`POST /workflows/{id}/approve`).
+
+## 3. Architectural & Code Quality Standards
+*   **Clean Architecture**: Maintain strict separation of concerns. AI Agents handle decision logic, API Routers handle HTTP contracts, and Pydantic Schemas handle all data validation.
+*   **SOLID Principles**: Ensure single-responsibility classes and functions. 
+*   **Zero Duplication**: Do not duplicate business logic. Rely on existing utilities and schema definitions in `backend/app/schemas/` and `src/components/`.
+*   **State Machine Logic**: Treat the database as a strict state machine. Agents only propose state transitions; they do not finalize them.
+
+## 4. Frontend Linting Enforcement (Oxlint)
+You must strictly adhere to our `.oxlintrc.json` configuration for all React code:
+*   **`react/rules-of-hooks` (ERROR)**: You must only call Hooks at the top level of React functions. Never call Hooks inside loops, conditions, or nested functions. This guarantees React correctly preserves the state of Hooks between renders.
+*   **`react/only-export-components` (WARN)**: Files containing React components must only export components (constant exports are permitted via `allowConstantExport: true`).
+*   **Type Safety**: Use strictly typed TypeScript. The `any` type is forbidden unless explicitly required for parsing raw, unpredictable JSON payloads from the backend.
+
+## 5. Backend (FastAPI & Python) Constraints
+*   **Strict Validation**: All input/output must pass through Pydantic validation models before hitting the database or AI context window.
+*   **Asynchronous I/O**: Use `async def` for all API endpoints, Gemini API calls, and database transactions to prevent thread blocking.
